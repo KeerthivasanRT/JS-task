@@ -1,50 +1,55 @@
-//Task 1//
-let a='80'
 
-let m1=Number(a);
+//Task 1
+let nam = prompt("Enter a name", "KEERTHIVASAN R");
 
-let grade;
-switch(true){
-    case m1>89:
-        grade='A';
-        break;
-    case m1>74:
-        grade='B';
-        break;
-    case m1>49:
-        grade='C'
-        break;
-    case m1<50:
-        grade='Fail'
-        break;
+let age = Number(prompt("Enter an age", 17));  
 
+function vote() 
+
+{
+
+    if (age >= 18) 
+        
+    {
+        alert("Hello " + nam + ", you are eligible to vote");
+    }
+    
+    else 
+        {
+        alert("Hello " + nam + ", you are not eligible to vote");
+    }
+
+    if (confirm("Do you want to check again?")) 
+    {
+        
+        nam = prompt("Enter a name", nam);
+        age = Number(prompt("Enter an age", age));
+        vote();  
+    } 
+    else 
+        {
+        alert("Goodbye!");
+    }
 }
-
-console.log(grade);
-
+vote(); 
 
 
-//Task 2//
 
-let x='1';
-let n=Number(x)
-if (n%2==0){
-    console.log("Even");
-}
-else{
-    console.log("Odd");
-}
 
-let day=7;
-let dayn;
 
-switch(true){
-    case day>0&&day<6:
-        dayn="Weekday";
-        break;
 
-    case day>5&&day<8:
-        dayn="weekend";
-        break;
-}
-console.log(dayn);
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Task 2
+
