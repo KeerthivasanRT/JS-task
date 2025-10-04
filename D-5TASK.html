@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final</title>
+    <script src="D-5TASK.js"></script>
+</head>
+<body>
+    <h1>🎮 Event Registration & Quiz</h1>
+
+<section id="registerSection">
+  <h2>Registration</h2>
+  Name: <input id="name">
+  Email: <input id="email">
+  Age: <input id="age" type="number">
+  <button onclick="registerUser()">Register</button>
+  <p id="regMsg"></p>
+</section>
+
+
+<section id="quizSection" class="hidden">
+  <h2>Quiz</h2>
+  <div id="questions"></div>
+  <button onclick="submitQuiz()">Submit Answers</button>
+  <p id="quizMsg"></p>
+</section>
+
+
+<section id="resultSection" class="hidden">
+  <h2>Result</h2>
+  <p id="scoreOutput"></p>
+  <p id="gradeOutput"></p>
+  <p id="timeOutput"></p>
+  <h3>Stored Data</h3>
+  <pre id="jsonOutput"></pre>
+</section>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      padding: 20px;
+      color: #2c3e50;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap; 
+    }
+    .tabs button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 8px 8px 0 0;
+      background: #111876;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .tabs button.active {
+      background: #2980b9;
+    }
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 20px;
+      border-radius: 0 8px 8px 8px;
+      max-width: 500px;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box; 
+    }
+    button.action {
+      background: #27ae60;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    button.action:hover {
+      background: #1e8449;
+    }
+    pre {
+      background: #ecf0f1;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🎓 Student Dashboard</h1>
+
+  <div class="tabs">
+    <button class="active" onclick="showTab('profile')">Profile</button>
+    <button onclick="showTab('age')">Age</button>
+    <button onclick="showTab('greeting')">Greeting</button>
+    <button onclick="showTab('calculator')">Calculator</button>
+    <button onclick="showTab('quotes')">Quotes</button>
+  </div>
+
+  <div id="profile" class="tab-content active">
+    <h2>Profile</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="birthYear" placeholder="Birth Year">
+    <input type="text" id="city" placeholder="City">
+    <button class="action" onclick="saveProfile()">Save Profile</button>
+    <h3>Stored Info (JSON):</h3>
+    <pre id="profileJSON">Not saved yet...</pre>
+  </div>
+
+  <div id="age" class="tab-content">
+    <h2>Age Checker</h2>
+    <button class="action" onclick="checkAge()">Check Age & Eligibility</button>
+    <p id="ageResult"></p>
+  </div>
+
+  <div id="greeting" class="tab-content">
+    <h2>Greeting</h2>
+    <button class="action" onclick="showGreeting()">Show Greeting</button>
+    <p id="greetingMsg"></p>
+  </div>
+
+  <div id="calculator" class="tab-content">
+    <h2>Calculator</h2>
+    <input type="number" id="num1" placeholder="Number 1">
+    <input type="number" id="num2" placeholder="Number 2">
+    <button class="action" onclick="calculate('+')">Add</button>
+    <button class="action" onclick="calculate('-')">Subtract</button>
+    <button class="action" onclick="calculate('*')">Multiply</button>
+    <button class="action" onclick="calculate('/')">Divide</button>
+    <p id="calcResult"></p>
+  </div>
+
+  <div id="quotes" class="tab-content">
+    <h2>Motivational Quotes</h2>
+    <button class="action" onclick="showQuote()">Get Quote</button>
+    <p id="quoteMsg"></p>
+  </div>
+<script>
+    let student = {}; 
+    let stepClicks = { profile: 0, age: 0, greeting: 0, calculator: 0 };
+
+    
+    function showTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelector(`.tabs button[onclick="showTab('${tabId}')"]`).classList.add("active");
+    }
+
+    function saveProfile() {
+      stepClicks.profile++;
+      if (stepClicks.profile === 1) {
+        try {
+          const name = document.getElementById("name").value.trim();
+          const birthYear = parseInt(document.getElementById("birthYear").value);
+          const city = document.getElementById("city").value.trim();
+          
+          if (!name || !birthYear || !city || isNaN(birthYear)) {
+            throw "Please fill all fields correctly!";
+          }
+
+          student = { name, birthYear, city };
+          document.getElementById("profileJSON").textContent = JSON.stringify(student, null, 2);
+        } catch (error) {
+          document.getElementById("profileJSON").textContent = "⚠️ " + error;
+          stepClicks.profile = 0; 
+        }
+      } else {
+        showTab("age");
+        stepClicks.profile = 0;
+      }
+    }
+
+    function checkAge() {
+      stepClicks.age++;
+      if (stepClicks.age === 1) {
+        if (!student.birthYear) {
+          document.getElementById("ageResult").textContent = "⚠️ Save your profile first!";
+          stepClicks.age = 0;
+          return;
+        }
+        const currentYear = new Date().getFullYear();
+        const age = currentYear - student.birthYear;
+        const eligibility = age >= 18 ? "Eligible (18+)" : "Not Eligible (Under 18)";
+        document.getElementById("ageResult").textContent = `${student.name} is ${age} years old. Status: ${eligibility}`;
+      } else {
+        showTab("greeting");
+        stepClicks.age = 0;
+      }
+    }
+
+    function showGreeting() {
+      stepClicks.greeting++;
+      if (stepClicks.greeting === 1) {
+        const hour = new Date().getHours();
+        let greeting;
+        if (hour < 12) greeting = "Good Morning 🌅";
+        else if (hour < 18) greeting = "Good Afternoon ☀️";
+        else greeting = "Good Evening 🌙";
+
+        if (student.name) {
+          greeting += `, ${student.name} from ${student.city}!`;
+        }
+        document.getElementById("greetingMsg").textContent = greeting;
+      } else {
+        showTab("calculator");
+        stepClicks.greeting = 0;
+      }
+    }
+
+    function calculate(op) {
+      stepClicks.calculator++;
+      if (stepClicks.calculator === 1) {
+        try {
+          const n1 = parseFloat(document.getElementById("num1").value);
+          const n2 = parseFloat(document.getElementById("num2").value);
+
+          if (isNaN(n1) || isNaN(n2)) throw "Enter valid numbers!";
+          let result;
+          switch(op) {
+            case '+': result = n1 + n2; break;
+            case '-': result = n1 - n2; break;
+            case '*': result = n1 * n2; break;
+            case '/': 
+              if (n2 === 0) throw "Cannot divide by zero!";
+              result = n1 / n2; break;
+          }
+          document.getElementById("calcResult").textContent = "Result: " + result;
+        } catch (error) {
+          document.getElementById("calcResult").textContent = "⚠️ " + error;
+          stepClicks.calculator = 0;
+        }
+      } else {
+        showTab("quotes");
+        stepClicks.calculator = 0;
+      }
+    }
+    const quotes = [
+      "Believe in yourself and all that you are.",
+      "Hard work beats talent when talent doesn’t work hard.",
+      "Don’t stop until you’re proud.",
+      "Success is the sum of small efforts repeated daily.",
+      "Your limitation—it’s only your imagination."
+    ];
+
+    function showQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      document.getElementById("quoteMsg").textContent = quotes[randomIndex];
+    }
+</script>   
+</body>
+</html>
